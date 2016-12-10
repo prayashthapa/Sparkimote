@@ -4,7 +4,7 @@
 ![Sparkimote]
 (sparki.jpg?raw=true "Sparkimote")
 
-Sparkimote is a web-interface that communicates with Sparki. It can communicate with Sparki either via USB Serial or Bluetooth Serial. Follow the instructions below to get started with controlling Sparki through your browser!
+**Sparkimote** is a web-interface that communicates with Sparki. It can communicate with Sparki either via USB Serial or Bluetooth Serial. Follow the instructions below to get started with controlling Sparki through your browser!
 
 - clone the repo and cd to it inside of Terminal
 - run ```npm install``` to install dependencies
