@@ -14,65 +14,93 @@ String inputString = "";
 #define VELOCITY          0.0278551532
 
 void setup() {
-  Serial.begin(9600);
+  Serial1.begin(9600);
   sparki.servo(SERVO_CENTER);
 }
 
 void loop() {
   sparki.RGB(0, 0, 100);
-  while (Serial.available()) {
+  if (Serial1.available()) {
 
-    char inChar = (char) Serial.read();
+    char inChar = (char) Serial1.read();
 
     if (inChar == 'L') {
 
       sparki.servo(SERVO_LEFT);
-      Serial.println("SERVO_LEFT"); // turn servo to the left
-      break;
+      Serial1.println("SERVO_LEFT");
+      return;
 
-    } else if (inChar == 'R') { // turn servo to the right
+    } else if (inChar == 'R') {
 
       sparki.servo(SERVO_RIGHT);
-      Serial.println("SERVO_RIGHT");
-      break;
+      Serial1.println("SERVO_RIGHT");
+      return;
 
-    } else if (inChar == 'C') { // turn servo to the middle
+    } else if (inChar == 'C') {
 
       sparki.servo(SERVO_CENTER);
-      Serial.println("SERVO_CENTER");
-      break;
-    } else if (inChar == 'W') { //move  forward
+      Serial1.println("SERVO_CENTER");
+      return;
+
+    } else if (inChar == 'W') {
 
       sparki.moveForward(5);
-      Serial.println("MOVE_FORWARD");
+      Serial1.println("MOVE_FORWARD");
+      return;
 
-    } else if (inChar == 'S') { //move back
+    } else if (inChar == 'S') {
 
       sparki.moveBackward(5);
-      Serial.println("MOVE_BACKWARD");
+      Serial1.println("MOVE_BACKWARD");
+      return;
 
+    } else if (inChar == 'X') {
 
-    } else if (inChar == 'I') { //toggle for Inverse Kinematics
-      Serial.println("INVERSE_KINEMATICS");
+      Serial1.println("STOP");
+      sparki.moveStop();
+      sparki.gripperStop();
+      return;
+
+    } else if (inChar == 'I') {
+
+      Serial1.println("INVERSE_KINEMATICS");
       inverseKinematics(0.1, 0.1);
+      return;
 
-    } else if (inChar == 'O'){  //toggle for Odometry
-      Serial.println("ODOMETRY");
+    } else if (inChar == 'O') {
+
+      Serial1.println("ODOMETRY");
       odometry();
+      return;
 
-    } else if (inChar == 'B'){  //toggle for reactiveBehaviors
-      Serial.println("REACTIVE_BEHAIVIORS");
+    } else if (inChar == 'B') {
+      Serial1.println("REACTIVE_BEHAIVIORS");
       reactiveBehaviors();
+      return;
 
-    } else if (inChar == 'A'){ // toggle for line follow **optional**
+    } else if (inChar == 'A') {
 
-          sparki.moveLeft(15);
-          Serial.println("MOVE_LEFT");
-      
-     } else if (inChar == 'D'){ // toggle for line follow **optional**
+      sparki.moveLeft(15);
+      Serial1.println("MOVE_LEFT");
+      return;
 
-          sparki.moveRight(15);
-          Serial.println("MOVE_RIGHT");
+     } else if (inChar == 'D') {
+
+      sparki.moveRight(15);
+      Serial1.println("MOVE_RIGHT");
+      return;
+
+    } else if (inChar == ']') {
+
+      sparki.gripperOpen();
+      Serial1.println("gripperOpen");
+      return;
+
+    } else if (inChar == '[') {
+
+      sparki.gripperClose();
+      Serial1.println("gripperClose");
+      return;
 
     } else {
       return;
@@ -120,9 +148,9 @@ int inverseKinematics(float xG, float yG) {
   alpha = thetaR - atan2((yI - yG), (xI - xG)) - PI/2.0;
   n = thetaG - thetaR;
 
-  Serial.print("rho: "); Serial.print(rho);
-  Serial.print(" alpha: "); Serial.print(alpha / PI * 180.0);
-  Serial.print(" n: "); Serial.println(n); Serial.println("- - - -");
+  Serial1.print("rho: "); Serial1.print(rho);
+  Serial1.print(" alpha: "); Serial1.print(alpha / PI * 180.0);
+  Serial1.print(" n: "); Serial1.println(n); Serial1.println("- - - -");
 
   // Forward speed
   xR = 0.1 * rho;
@@ -136,7 +164,7 @@ int inverseKinematics(float xG, float yG) {
   lVel = (2.0 * xR / RAD - thetaRP * AXLE_DIST / RAD) / 2.0;
   rVel = (2.0 * xR / RAD + thetaRP * AXLE_DIST / RAD) / 2.0;
 
-  // Serial.print("L: " + lVel + " "); Serial.print("R: " + rVel);
+  // Serial1.print("L: " + lVel + " "); Serial1.print("R: " + rVel);
 
   sparki.motorRotate(MOTOR_LEFT, DIR_CCW, lVel / (VEL / RAD) * 100.0);
   sparki.motorRotate(MOTOR_RIGHT, DIR_CW, rVel / (VEL / RAD) * 100.0);
@@ -151,12 +179,12 @@ int inverseKinematics(float xG, float yG) {
   yI += sin(thetaR) * avgVel * LOOP_TIME / 1000.0;
   thetaR += (rVel * RAD - lVel * RAD) / AXLE_DIST * LOOP_TIME / 1000.0;
 
-  Serial.print("xI: "); Serial.print(xI);
-  Serial.print(" yI: "); Serial.print(yI);
-  Serial.print(" thetaR: "); Serial.println(thetaR/PI * 180.0);
+  Serial1.print("xI: "); Serial1.print(xI);
+  Serial1.print(" yI: "); Serial1.print(yI);
+  Serial1.print(" thetaR: "); Serial1.println(thetaR/PI * 180.0);
 
   // Ensure every loop is exactly 100 ms
-  while (millis() < startTime + LOOP_TIME) {}
+  // while (millis() < startTime + LOOP_TIME) {}
 
   return 1;
 }
@@ -192,17 +220,17 @@ float* odometry() {
 
   endTime = millis();
 
-  Serial.print("X: ");
-  Serial.println(x / 10);
-  Serial.print("Y: ");
-  Serial.println(y / 10);
+  Serial1.print("X: ");
+  Serial1.println(x / 10);
+  Serial1.print("Y: ");
+  Serial1.println(y / 10);
 
-  Serial.print("Theta: ");
-  Serial.println(theta);
+  Serial1.print("Theta: ");
+  Serial1.println(theta);
 
-  Serial.print("Time: ");
-  Serial.println(LOOP_TIME - (endTime - startTime));
-  Serial.println("- - - - - - - - - - - - - - -");
+  Serial1.print("Time: ");
+  Serial1.println(LOOP_TIME - (endTime - startTime));
+  Serial1.println("- - - - - - - - - - - - - - -");
 
   // Ensure every loop is 100ms  --see if we need to delete this
   if (LOOP_TIME - (endTime - startTime) > 0) {
@@ -211,7 +239,7 @@ float* odometry() {
 
   coords[0] = x;
   coords[1] = y;
-  Serial.print(x, y);
+  Serial1.print(x, y);
   return coords;
 }
 
@@ -227,5 +255,7 @@ int reactiveBehaviors(){
     sparki.moveRight(180);
     sparki.moveForward();
   }
-  
+
 }
+
+

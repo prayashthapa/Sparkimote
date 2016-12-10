@@ -57,6 +57,10 @@ function initSocketIO(httpServer, debug) {
       serialPort.write('D');
     });
 
+    socket.on('stop', function(data) {
+      serialPort.write('X');
+    });
+
     // * Servo
     socket.on('servoLeft', function(data) {
       console.log('servoLeft');
@@ -91,8 +95,19 @@ function initSocketIO(httpServer, debug) {
     socket.on('reactive', function(data) {
       console.log('reactive');
       serialPort.write('B');
-
     });
+
+    socket.on('gripperOpen', function(data) {
+      console.log('gripperOpen');
+      serialPort.write(']');
+    });
+
+    socket.on('gripperClose', function(data) {
+      console.log('gripperClose');
+      serialPort.write('[');
+    });
+
+
   });
 }
 
@@ -100,7 +115,7 @@ function initSocketIO(httpServer, debug) {
 function serialListener(debug) {
   var receivedData = "";
   var SerialPort = require("serialport")
-  serialPort = new SerialPort('/dev/tty.usbmodem1421', {
+  serialPort = new SerialPort('/dev/cu.ArcBotics-DevB', {
     baudrate: 9600,
     // defaults for Arduino serial communication
     dataBits: 8,

@@ -3,7 +3,7 @@
 <html class="no-js" lang="en">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="initial-scale=1.0001, minimum-scale=1.0001, maximum-scale=1.0001, user-scalable=no" />
   <title>Sparkimote</title>
 
   <!-- ** CSS ** -->
@@ -66,7 +66,7 @@
       <button type="button" class="button" id="moveLeft">turnLeft</button>
       <button type="button" class="button" id="moveRight">turnRight</button>
       <button type="button" class="button" id="moveBackward">moveBackward</button>
-      <button type="button" class="button" id="moveBackward">Stop</button>
+      <button type="button" class="button" id="stop">Stop</button>
       <button type="button" class="button" id="moveForward">moveForward</button>
     </div>
     <div class="large-8 columns">
@@ -74,6 +74,8 @@
       <button type="button" class="button" id="inverseK">InverseKinematics</button>
       <button type="button" class="button" id="odometry">Odometry</button>
       <button type="button" class="button" id="reactive">ReactiveBehaviors</button>
+      <button type="button" class="button" id="gripperOpen">gripperOpen</button>
+      <button type="button" class="button" id="gripperClose">gripperClose</button>
     </div>
   </div>
 
@@ -119,6 +121,18 @@
         socket.emit('moveBackward');
       });
 
+      $('#stop').click(function() {
+        socket.emit('stop');
+      });
+
+      $('#moveLeft').click(function() {
+        socket.emit('moveLeft');
+      });
+
+      $('#moveRight').click(function() {
+        socket.emit('moveRight');
+      });
+
       $('#inverseK').click(function() {
         socket.emit('inverseK', { xG: 0.15, yG: 0.15 });
       });
@@ -129,6 +143,14 @@
 
       $('#reactive').click(function() {
         socket.emit('reactive');
+      });
+
+      $('#gripperOpen').click(function() {
+        socket.emit('gripperOpen');
+      });
+
+      $('#gripperClose').click(function() {
+        socket.emit('gripperClose');
       });
 
     });
